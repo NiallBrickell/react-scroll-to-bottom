@@ -11,16 +11,18 @@ const ROOT_STYLE = {
   position: 'relative'
 };
 
-const BasicScrollToBottomCore = ({ children, className, followButtonClassName, scrollViewClassName }) => {
-  const rootCSS = useStyleToClassName()(ROOT_STYLE);
+const BasicScrollToBottomCore = React.forwardRef(
+  ({ children, className, followButtonClassName, scrollViewClassName }, ref) => {
+    const rootCSS = useStyleToClassName()(ROOT_STYLE);
 
-  return (
-    <div className={classNames(rootCSS, (className || '') + '')}>
-      <Panel className={(scrollViewClassName || '') + ''}>{children}</Panel>
-      <AutoHideFollowButton className={(followButtonClassName || '') + ''} />
-    </div>
-  );
-};
+    return (
+      <div className={classNames(rootCSS, (className || '') + '')} ref={ref}>
+        <Panel className={(scrollViewClassName || '') + ''}>{children}</Panel>
+        <AutoHideFollowButton className={(followButtonClassName || '') + ''} />
+      </div>
+    );
+  }
+);
 
 BasicScrollToBottomCore.defaultProps = {
   children: undefined,
@@ -36,36 +38,42 @@ BasicScrollToBottomCore.propTypes = {
   scrollViewClassName: PropTypes.string
 };
 
-const BasicScrollToBottom = ({
-  checkInterval,
-  children,
-  className,
-  debounce,
-  debug,
-  followButtonClassName,
-  initialScrollBehavior,
-  mode,
-  nonce,
-  scroller,
-  scrollViewClassName
-}) => (
-  <Composer
-    checkInterval={checkInterval}
-    debounce={debounce}
-    debug={debug}
-    initialScrollBehavior={initialScrollBehavior}
-    mode={mode}
-    nonce={nonce}
-    scroller={scroller}
-  >
-    <BasicScrollToBottomCore
-      className={className}
-      followButtonClassName={followButtonClassName}
-      scrollViewClassName={scrollViewClassName}
+const BasicScrollToBottom = React.forwardRef(
+  (
+    {
+      checkInterval,
+      children,
+      className,
+      debounce,
+      debug,
+      followButtonClassName,
+      initialScrollBehavior,
+      mode,
+      nonce,
+      scroller,
+      scrollViewClassName
+    },
+    ref
+  ) => (
+    <Composer
+      checkInterval={checkInterval}
+      debounce={debounce}
+      debug={debug}
+      initialScrollBehavior={initialScrollBehavior}
+      mode={mode}
+      nonce={nonce}
+      scroller={scroller}
     >
-      {children}
-    </BasicScrollToBottomCore>
-  </Composer>
+      <BasicScrollToBottomCore
+        className={className}
+        followButtonClassName={followButtonClassName}
+        scrollViewClassName={scrollViewClassName}
+        ref={ref}
+      >
+        {children}
+      </BasicScrollToBottomCore>
+    </Composer>
+  )
 );
 
 BasicScrollToBottom.defaultProps = {
